@@ -189,6 +189,14 @@ const client = new Client({
   intents: [GatewayIntentBits.Guilds]
 });
 
+process.on('unhandledRejection', (error) => {
+  console.error('[UNHANDLED REJECTION]', error);
+});
+
+process.on('uncaughtException', (error) => {
+  console.error('[UNCAUGHT EXCEPTION]', error);
+});
+
 client.once('ready', async () => {
   console.log(`Bot listo como ${client.user.tag}`);
   const guild = await client.guilds.fetch(DISCORD_GUILD_ID);
@@ -221,4 +229,7 @@ app.listen(Number(PORT), () => {
   console.log(`HTTP server escuchando en puerto ${PORT}`);
 });
 
-client.login(DISCORD_TOKEN);
+console.log('[BOOT] DISCORD_TOKEN presente:', Boolean(DISCORD_TOKEN), 'longitud:', DISCORD_TOKEN?.length || 0);
+client.login((DISCORD_TOKEN || '').trim()).catch(err => {
+  console.error('[DISCORD LOGIN ERROR]', err);
+});
